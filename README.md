@@ -9,7 +9,15 @@ Convert the dealer quote CSV export into the streamlined "Previous Service" cust
 - Outputs only the required columns: phone number, customer names, purchase date, year, model, VIN, miles, payoff, and payment.
 - Normalizes phone numbers to 11 digits with a leading 1 (e.g., (850) 508-6625 → 18505086625).
 
-## Usage
+## Usage (two options)
+
+### A) Web (Next.js) – for Vercel or local dev
+1. Install deps: `npm install`
+2. Run locally: `npm run dev` then open the URL shown (usually http://localhost:3000)
+3. Upload the quote CSV export. The app applies the same filters and gives you a download link for the cleaned CSV.
+4. Deploy to Vercel as a Next.js app (framework preset: Next.js, root `./`).
+
+### B) CLI (Python) – local batch mode
 1. Ensure Python 3.9+ is available on your machine.
 2. Run the transformer:
 
