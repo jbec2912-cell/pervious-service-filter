@@ -1,37 +1,30 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Previous Service Filter
 
-## Getting Started
+Convert the dealer quote CSV export into the streamlined "Previous Service" customer CSV.
 
-First, run the development server:
+## What it does
+- Keeps only rows with a first name and at least one phone number.
+- Drops trades from model year 2025 or newer (default max year = 2024).
+- Drops rows with more than $6,000 in negative equity (TradeEquity < -6000).
+- Outputs only the required columns: phone number, customer names, purchase date, year, model, VIN, miles, payoff, and payment.
+- Normalizes phone numbers to 11 digits with a leading 1 (e.g., (850) 508-6625 → 18505086625).
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Usage
+1. Ensure Python 3.9+ is available on your machine.
+2. Run the transformer:
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+   ```bash
+   python previous_service_filter.py --input "/path/to/Quote - 01_05_2026 12_44 - Limited+Export.csv" --output "Previous Service Customer.csv"
+   ```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. The output CSV will be written to the path you provide (default is `Previous Service Customer.csv` in the current directory).
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Options
+- `--max-year`: Keep vehicles with `TradeYear` less than or equal to this year. Default: 2024.
+- `--min-equity`: Drop rows with `TradeEquity` below this value. Default: -6000.
+- `--output`: Path for the transformed CSV. Default: `Previous Service Customer.csv`.
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-# previous-service-filter
+## Notes
+- The script expects the column names from the provided quote export. If the export format changes, adjust the constants at the top of `previous_service_filter.py`.
+- Purchase dates are formatted as `M/D/YY` when possible; unparseable dates are left as-is.
+- Only built-in Python modules are used; no extra dependencies are required.
